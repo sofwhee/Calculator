@@ -18,13 +18,13 @@ function multiply(num1, num2) {
 function operate(num1, num2, operand) {
 	switch(operand) {
 		case "+":
-			add(num1, num2);
+			return add(num1, num2);
 		case "-":
-			subtract(num1, num2);
+			return subtract(num1, num2);
 		case "/":
-			divide(num1, num2);
+			return divide(num1, num2);
 		case "*":
-			multiply(num1, num2);
+			return multiply(num1, num2);
 	}
 };
 
