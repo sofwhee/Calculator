@@ -1,11 +1,22 @@
 html, body {
     height: 100%;
     margin: 0;
-    background-color: rgb(162, 109, 184);
+    background: rgb(162,109,184);
+    background: linear-gradient(180deg, rgb(162, 91, 228) 0%, rgb(236, 204, 178) 100%);
 
     display:            flex;
+    flex-direction:     column;
     justify-content:    center;
     align-items:        center;
+}
+
+h1 {
+    font-family: 'Copse', serif;
+    font-size: 75px;
+    letter-spacing: 10px;
+    text-align: center;
+
+    color: rgb(216, 215, 158);
 }
 
 #calcContainer {
@@ -13,7 +24,7 @@ html, body {
     width:          400px;
 
     border-radius:  50px;
-    background-color: rgb(230, 139, 241);
+    background-color: rgb(137, 118, 241);
 
     display:            flex;
     flex-direction:     column;
