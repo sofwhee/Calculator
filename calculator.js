@@ -31,3 +31,12 @@ function operate(num1, num2, operand) {
 function display(text) {
 
 };
+
+const midButCont = document.querySelector('#middleButtonsContainer')
+const midButsArray = Array.from(midButCont.childNodes)
+midButsArray.forEach(button => button.className = 'middleButton')
+
+const sideButCont = document.querySelector('#sideButtonsContainer')
+const sideButsArray = Array.from(sideButCont.childNodes)
+sideButsArray.forEach(button => button.className = 'sideButton')
+
