@@ -1,0 +1,79 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    background-color: rgb(162, 109, 184);
+
+    display:            flex;
+    justify-content:    center;
+    align-items:        center;
+}
+
+#calcContainer {
+    height:         500px;
+    width:          400px;
+
+    border-radius:  50px;
+    background-color: rgb(230, 139, 241);
+
+    display:            flex;
+    flex-direction:     column;
+    justify-content:    center;
+    align-items:        center;
+}
+
+#calcBitsContainer {
+    height: 80%;
+    width: 80%;
+
+    display:            flex;
+    flex-direction:     column;
+    justify-content:    space-between;
+    align-items:        center;
+}
+
+#display {
+    height: 25%;
+    width: 100%;
+
+    border: 3px solid rgb(52, 153, 85);
+    border-radius: 5px;
+    background-color: rgb(213, 255, 213);
+}
+
+#buttonsContainer {
+    height: 60%;
+    width: 100%;
+
+    display:    flex;
+    gap:        10px;
+}
+
+#middleButtons {
+    width:  100%;
+
+    display: grid;
+    grid-template-columns:  
+    1fr 1fr 1fr;
+    grid-template-rows:     
+    1fr 1fr 1fr 1fr;
+    gap: 5px;
+}
+
+#sideButtons {
+    width: 40%;
+
+    display: grid;
+    grid-template-columns: 100%;
+    gap: 5px;
+}
+
+button {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 30px;
+    
+    color:              rgb(255, 255, 255);
+    background-color:   rgb(158, 214, 216);
+    
+    border-radius: 10px;
+    padding:        0;
+}
