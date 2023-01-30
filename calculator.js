@@ -39,7 +39,10 @@ function clear() {
 
 const midButCont = document.querySelector('#middleButtonsContainer')
 const midButsArray = Array.from(midButCont.childNodes)
-midButsArray.forEach(button => button.className = 'middleButton')
+midButsArray.forEach(button => button.className = 'numberButton')
+
+document.getElementById('decimalButton').classList.remove('numberButton')
+document.getElementById('decimalButton').classList.remove('numberButton')
 
 const sideButCont = document.querySelector('#sideButtonsContainer')
 const sideButsArray = Array.from(sideButCont.childNodes)
