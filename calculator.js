@@ -33,6 +33,10 @@ function display(toDisplay) {
 	document.getElementById('display').innerText = toDisplay
 };
 
+function clear() {
+	document.getElementById('display').innerText = ""
+}
+
 const midButCont = document.querySelector('#middleButtonsContainer')
 const midButsArray = Array.from(midButCont.childNodes)
 midButsArray.forEach(button => button.className = 'middleButton')
