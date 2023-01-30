@@ -38,7 +38,7 @@ const midButsArray = Array.from(midButCont.childNodes)
 midButsArray.forEach(button => button.className = 'numberButton')
 
 document.getElementById('decimalButton').classList.remove('numberButton')
-document.getElementById('decimalButton').classList.remove('numberButton')
+document.getElementById('equalsButton').classList.remove('numberButton')
 
 const sideButCont = document.querySelector('#sideButtonsContainer')
 const sideButsArray = Array.from(sideButCont.childNodes)
