@@ -51,9 +51,10 @@ h1 {
     background-color: rgb(213, 255, 213);
 
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
 
+    overflow: hidden;
 }
 
 #display {
@@ -61,8 +62,6 @@ h1 {
     font-size: 12vw;
 
     color: rgb(125, 192, 194);;
-
-    white-space: nowrap;
 }
 
 #buttonsContainer {
