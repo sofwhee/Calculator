@@ -29,7 +29,7 @@ function operate(num1, num2, operand) {
 };
 
 function display(text) {
-
+	
 };
 
 console.log("add: " + add(1, 2))

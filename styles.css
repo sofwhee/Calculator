@@ -42,13 +42,27 @@ h1 {
     align-items:        center;
 }
 
-#display {
+#displayContainer {
     height: 25%;
     width: 100%;
 
     border: 3px solid rgb(52, 153, 85);
     border-radius: 5px;
     background-color: rgb(213, 255, 213);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#display {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 12vw;
+
+    color: rgb(125, 192, 194);;
+
+    white-space: nowrap;
 }
 
 #buttonsContainer {
