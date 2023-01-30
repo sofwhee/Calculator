@@ -32,6 +32,11 @@ function display(text) {
 
 };
 
+console.log("add: " + add(1, 2))
+console.log("subtract: " + subtract(1, 2))
+console.log("divide: " + divide(1, 5))
+console.log("multiply: " + multiply(1, 2))
+
 const midButCont = document.querySelector('#middleButtonsContainer')
 const midButsArray = Array.from(midButCont.childNodes)
 midButsArray.forEach(button => button.className = 'middleButton')
