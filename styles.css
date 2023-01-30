@@ -62,6 +62,8 @@ h1 {
     font-size: 12vw;
 
     color: rgb(125, 192, 194);;
+    
+    margin-right: 6px;
 }
 
 #buttonsContainer {
