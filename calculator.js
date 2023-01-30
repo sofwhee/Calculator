@@ -45,3 +45,13 @@ const sideButCont = document.querySelector('#sideButtonsContainer')
 const sideButsArray = Array.from(sideButCont.childNodes)
 sideButsArray.forEach(button => button.className = 'sideButton')
 
+// make number buttons put buttons on calculator
+
+// make clear button work
+
+// make operand buttons put operands on calculator
+
+// make equals button execute operation in display
+
+// make operand buttons automatically put through
+// operation if doubled up in display
