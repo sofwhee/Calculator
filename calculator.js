@@ -44,7 +44,7 @@ const sideButCont = document.querySelector('#sideButtonsContainer')
 const sideButsArray = Array.from(sideButCont.childNodes)
 sideButsArray.forEach(button => button.className = 'sideButton')
 
-// make number buttons put buttons on calculator
+// make number buttons put numbers on calculator
 function numberPress(buttPressed) {
 	textToDisplay = document.getElementById('display').innerText
 	textToDisplay += buttPressed.innerText
