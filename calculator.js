@@ -33,10 +33,6 @@ function display(toDisplay) {
 	document.getElementById('display').innerText = toDisplay
 };
 
-function clear() {
-	document.getElementById('display').innerText = ""
-}
-
 const midButCont = document.querySelector('#middleButtonsContainer')
 const midButsArray = Array.from(midButCont.childNodes)
 midButsArray.forEach(button => button.className = 'numberButton')
@@ -49,8 +45,25 @@ const sideButsArray = Array.from(sideButCont.childNodes)
 sideButsArray.forEach(button => button.className = 'sideButton')
 
 // make number buttons put buttons on calculator
+function numberPress(buttPressed) {
+	textToDisplay = document.getElementById('display').innerText
+	textToDisplay += buttPressed.innerText
+	display(textToDisplay)
+}
+
+const numberButs = document.querySelectorAll('.numberButton')
+const numberButsArray = Array.from(numberButs)
+numberButsArray.forEach((numberBut) => {
+	numberBut.addEventListener('click', numberPress.bind(null, numberBut))
+})
 
 // make clear button work
+function clear() {
+	document.getElementById('display').innerText = ""
+}
+
+const clearBut = document.getElementById('clearButton')
+clearBut.addEventListener('click', clear)
 
 // make operand buttons put operands on calculator
 
@@ -58,3 +71,5 @@ sideButsArray.forEach(button => button.className = 'sideButton')
 
 // make operand buttons automatically put through
 // operation if doubled up in display
+
+//
