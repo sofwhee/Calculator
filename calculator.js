@@ -28,14 +28,10 @@ function operate(num1, num2, operand) {
 	}
 };
 
-function display(text) {
-	
+function display(toDisplay) {
+	// add conditionals to limit length of text...
+	document.getElementById('display').innerText = toDisplay
 };
-
-console.log("add: " + add(1, 2))
-console.log("subtract: " + subtract(1, 2))
-console.log("divide: " + divide(1, 5))
-console.log("multiply: " + multiply(1, 2))
 
 const midButCont = document.querySelector('#middleButtonsContainer')
 const midButsArray = Array.from(midButCont.childNodes)
