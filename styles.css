@@ -46,9 +46,10 @@ h1 {
     height: 25%;
     width: 100%;
 
-    border: 3px solid rgb(52, 153, 85);
+    border: 3px solid rgb(73, 103, 168);
     border-radius: 5px;
     background-color: rgb(213, 255, 213);
+    /* background: linear-gradient(180deg, rgb(206, 248, 255) 0%, rgb(213, 255, 244) 100%); */
 
     display: flex;
     justify-content: flex-end;
@@ -59,7 +60,7 @@ h1 {
 
 #display {
     font-family: 'Patrick Hand', cursive;
-    font-size: 12vw;
+    font-size: 75px;
 
     color: rgb(125, 192, 194);;
     
