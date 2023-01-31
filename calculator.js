@@ -14,6 +14,8 @@ function multiply(num1, num2) {
   return num1 * num2;
 }
 
+const operandsList = ["+", "-", "*", "/"];
+
 function operate(num1, num2, operand) {
   switch (operand) {
     case "+":
@@ -32,41 +34,21 @@ function display(toDisplay) {
   document.getElementById("display").innerText = toDisplay;
 }
 
-const midButCont = document.querySelector("#middleButtonsContainer");
-const midButsArray = Array.from(midButCont.childNodes);
-midButsArray.forEach((button) => (button.className = "numberButton"));
-
-document.getElementById("decimalButton").classList.remove("numberButton");
-document.getElementById("equalsButton").classList.remove("numberButton");
-
-const sideButCont = document.querySelector("#sideButtonsContainer");
-const sideButsArray = Array.from(sideButCont.children);
-sideButsArray.forEach((button) => button.classList.add("sideButton"));
-
-
 function clear() {
   document.getElementById("display").innerText = "";
 }
 
-// make number buttons put numbers on calculator
 function numberPress(buttPressed) {
   let textToDisplay = document.getElementById("display").innerText;
-	if (textToDisplay.includes("very funny...")) {clear()}
+
+	if (textToDisplay.includes("very funny...")) {
+		clear();
+		textToDisplay = document.getElementById("display").innerText;
+	}
+	
   textToDisplay += buttPressed.innerText;
   display(textToDisplay);
 }
-
-const numberButs = document.querySelectorAll(".numberButton");
-const numberButsArray = Array.from(numberButs);
-numberButsArray.forEach((numberBut) => {
-  numberBut.addEventListener("click", numberPress.bind(null, numberBut));
-});
-
-const clearBut = document.getElementById("clearButton");
-clearBut.addEventListener("click", clear);
-
-// make operand buttons put operands on calculator
-const operandsList = ["+", "-", "*", "/"];
 
 function operandPress(buttPressed) {
   let operandText = buttPressed.innerText;
@@ -82,13 +64,6 @@ function operandPress(buttPressed) {
 	}
 }
 
-const operandButs = document.querySelectorAll(".operand");
-const operandButsArray = Array.from(operandButs);
-operandButsArray.forEach((operandBut) => {
-  operandBut.addEventListener("click", operandPress.bind(null, operandBut));
-});
-
-// make equals button execute operation in display
 function equals() {
 	let displayText = document.getElementById("display").innerText;
 	let operand
@@ -106,10 +81,35 @@ function equals() {
   }
 }
 
+// Add and remove classes
+const midButCont = document.querySelector("#middleButtonsContainer");
+const midButsArray = Array.from(midButCont.childNodes);
+midButsArray.forEach((button) => (button.className = "numberButton"));
+
+document.getElementById("decimalButton").classList.remove("numberButton");
+document.getElementById("equalsButton").classList.remove("numberButton");
+
+const sideButCont = document.querySelector("#sideButtonsContainer");
+const sideButsArray = Array.from(sideButCont.children);
+sideButsArray.forEach((button) => button.classList.add("sideButton"));
+
+
+// Apply eventlisteners to buttons.
+const numberButs = document.querySelectorAll(".numberButton");
+const numberButsArray = Array.from(numberButs);
+numberButsArray.forEach((numberBut) => {
+  numberBut.addEventListener("click", numberPress.bind(null, numberBut));
+});
+
+const clearBut = document.getElementById("clearButton");
+clearBut.addEventListener("click", clear);
+
+const operandButs = document.querySelectorAll(".operand");
+const operandButsArray = Array.from(operandButs);
+operandButsArray.forEach((operandBut) => {
+  operandBut.addEventListener("click", operandPress.bind(null, operandBut));
+});
+
 const equalsButton = document.getElementById("equalsButton")
 equalsButton.addEventListener("click", equals)
 
-// make operand buttons automatically put through
-// operation if doubled up in display
-
-//
