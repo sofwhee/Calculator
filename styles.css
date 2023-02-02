@@ -120,3 +120,8 @@ button:active {
 .sideButton {
     font-size: 22px;
 }
+
+button.disabled {
+    color:              rgb(122, 122, 122);
+    background-color:   rgb(55, 74, 75);
+}

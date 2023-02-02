@@ -17,6 +17,9 @@ function multiply(num1, num2) {
 const operandsList = ["+", "-", "*", "/"];
 
 function operate(num1, num2, operand) {
+	console.log("operation triggered, num1: " + num1 + " num2: " + num2 + " operator: " + operand)
+	if (isNaN(num1) || isNaN(num2)) {return false}
+
   switch (operand) {
     case "+":
       return add(+num1, +num2);
@@ -24,7 +27,7 @@ function operate(num1, num2, operand) {
       return subtract(+num1, +num2);
     case "/":
 			if (num2 == 0) {return "very funny..."}
-      return divide(+num1, +num2).toFixed(5);
+      return parseFloat(divide(+num1, +num2).toFixed(5));
     case "*":
       return multiply(+num1, +num2);
   }
@@ -36,6 +39,7 @@ function display(toDisplay) {
 
 function clear() {
   document.getElementById("display").innerText = "";
+	//enable decimal button
 }
 
 function numberPress(buttPressed) {
@@ -50,35 +54,63 @@ function numberPress(buttPressed) {
   display(textToDisplay);
 }
 
+function equals() {
+
+	let displayText = document.getElementById("display").innerText;
+	let operand;
+	let numbers;
+	let result = displayText
+
+	for (const operands of operandsList) {
+		let opIndex = displayText.indexOf(operands);
+
+		// check for negative numbers
+		if (opIndex != -1 
+			&& opIndex != 0 
+			&& !isNaN(+displayText[opIndex - 1])) {
+
+			operand = operands
+			numbers = displayText.split(operand)
+
+			// if user pressed equals after only entering a num and / or *...
+			if ((operands == "*" || operands == "/") && (displayText.charAt(opIndex) 
+			== displayText.charAt(displayText.length-1))) {
+				numbers[1] = 1
+			}
+
+			result = operate(numbers[0], numbers[1], operand)
+			break
+		}
+	}
+
+	display(result)
+}
+
+
 function operandPress(buttPressed) {
   let operandText = buttPressed.innerText;
   let displayText = document.getElementById("display").innerText;
 
-	if (!displayText.includes(operandText)) {
-		console.log("displaytext does not include the operand")
+	let includesAnOperand = operandsList.some(operand => displayText.includes(operand))
+
+	if (includesAnOperand) {
+		equals(operandText)
 		numberPress(buttPressed)
-	} else {
-		console.log("displaytext does include the operand")
-		equals()
+	}	else if (displayText.length != 0) {
 		numberPress(buttPressed)
 	}
 }
 
-function equals() {
+function decimal() {
 	let displayText = document.getElementById("display").innerText;
-	let operand
+	let lastChar = displayText.slice(-1)
+	
+	console.log(lastChar)
 
-	operandsList.forEach(operandStr => {
-		if (displayText.includes(operandStr)) {
-			operand = operandStr
-		}
-	})
-
-	if (operand) {
-		const numbers = displayText.split(operand);
-    const result = operate(numbers[0], numbers[1], operand);
-		display(result)
-  }
+	if (!isNaN(lastChar)) {
+		display(displayText + '.')
+		// disable decimal button
+	}
 }
 
 // Add and remove classes
@@ -112,4 +144,7 @@ operandButsArray.forEach((operandBut) => {
 
 const equalsButton = document.getElementById("equalsButton")
 equalsButton.addEventListener("click", equals)
+
+const decimalButton = document.getElementById("decimalButton")
+decimalButton.addEventListener("click", decimal)
 
