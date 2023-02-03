@@ -86,6 +86,23 @@ function equals() {
 	display(result)
 }
 
+function identifyNumbers() {
+	let displayText = document.getElementById("display").innerText;
+
+	// split by operand if one exists
+	for (const operands of operandsList) {
+		let opIndex = displayText.indexOf(operands);
+
+		// don't trigger on negative numbers
+		if (opIndex != -1 
+				&& opIndex != 0 
+				&& !isNaN(+displayText[opIndex - 1])) {
+
+			let operand = operands
+			numbers = Array.from(displayText.split(operand))
+			return numbers
+		}
+	}
 
 function operandPress(buttPressed) {
   let operandText = buttPressed.innerText;
@@ -98,19 +115,25 @@ function operandPress(buttPressed) {
 	} else if (includesAnOperand) {
 		equals(operandText)
 		numberPress(buttPressed)
+	} else if (displayText.charAt(displayText.length-1) == ".") {
+		displayText += "0"
+		display(displayText)
+		numberPress(buttPressed)
 	}	else if (displayText.length != 0) {
 		numberPress(buttPressed)
-	}
+	} 
 }
 
 function decimal() {
 	let displayText = document.getElementById("display").innerText;
-	let lastChar = displayText.slice(-1)
-	
+	let lastChar = displayText.charAt(displayText.length-1)
+	let currNumber = identifyNumbers()[-1]
+
+
 	console.log(lastChar)
 
-	if (!isNaN(lastChar)) {
-		display(displayText + '.')
+	if (!isNaN(lastChar) && !currNumber.includes('.')) {
+		display(displayText += '.')
 		// disable decimal button
 	}
 }
