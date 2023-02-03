@@ -15,9 +15,9 @@ function multiply(num1, num2) {
 }
 
 const operandsList = ["+", "-", "*", "/"];
+const divideByZeroMsg = "no!"
 
 function operate(num1, num2, operand) {
-	console.log("operation triggered, num1: " + num1 + " num2: " + num2 + " operator: " + operand)
 	if (isNaN(num1) || isNaN(num2)) {return false}
 
   switch (operand) {
@@ -26,7 +26,7 @@ function operate(num1, num2, operand) {
     case "-":
       return subtract(+num1, +num2);
     case "/":
-			if (num2 == 0) {return "very funny..."}
+			if (num2 == 0) {return divideByZeroMsg}
       return parseFloat(divide(+num1, +num2).toFixed(5));
     case "*":
       return multiply(+num1, +num2);
@@ -45,7 +45,7 @@ function clear() {
 function numberPress(buttPressed) {
   let textToDisplay = document.getElementById("display").innerText;
 
-	if (textToDisplay.includes("very funny...")) {
+	if (textToDisplay.includes(divideByZeroMsg)) {
 		clear();
 		textToDisplay = document.getElementById("display").innerText;
 	}
@@ -93,7 +93,9 @@ function operandPress(buttPressed) {
 
 	let includesAnOperand = operandsList.some(operand => displayText.includes(operand))
 
-	if (includesAnOperand) {
+	if (displayText == divideByZeroMsg) {
+		clear()
+	} else if (includesAnOperand) {
 		equals(operandText)
 		numberPress(buttPressed)
 	}	else if (displayText.length != 0) {
