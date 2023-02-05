@@ -103,6 +103,9 @@ function identifyNumbers() {
 			return numbers
 		}
 	}
+	number = [displayText]
+	return number
+}
 
 function operandPress(buttPressed) {
   let operandText = buttPressed.innerText;
@@ -112,9 +115,27 @@ function operandPress(buttPressed) {
 
 	if (displayText == divideByZeroMsg) {
 		clear()
+
+	} else if (operandText == "-") { // handle negatives...
+		
+		doubleMinusAtStart = displayText.length > 1 && displayText.charAt(0) == "-"
+		tripleMinus = displayText.slice(displayText.length-2, displayText.length-1) == "--"
+		minusAtEnd = identifyNumbers().length > 1
+
+		if (doubleMinusAtStart || tripleMinus || minusAtEnd) {
+			console.log("invalid minus")
+			return // do nothing if invalid "-"
+		}
+
+		minusAtStart = displayText.length == 0 & operandText == "-"
+
+		if (minusAtStart) {
+			nnumberPress(buttPressed)
+		}
+
 	} else if (includesAnOperand) {
 		equals(operandText)
-		numberPress(buttPressed)
+		numberPress(buttPressed) 
 	} else if (displayText.charAt(displayText.length-1) == ".") {
 		displayText += "0"
 		display(displayText)
@@ -127,10 +148,10 @@ function operandPress(buttPressed) {
 function decimal() {
 	let displayText = document.getElementById("display").innerText;
 	let lastChar = displayText.charAt(displayText.length-1)
-	let currNumber = identifyNumbers()[-1]
+	let currNumber = identifyNumbers()
+	currNumber = currNumber[currNumber.length - 1]
 
-
-	console.log(lastChar)
+	console.log(currNumber)
 
 	if (!isNaN(lastChar) && !currNumber.includes('.')) {
 		display(displayText += '.')
