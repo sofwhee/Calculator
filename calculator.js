@@ -54,70 +54,88 @@ function numberPress(buttPressed) {
   display(textToDisplay);
 }
 
-function equals() {
-
-	let displayText = document.getElementById("display").innerText;
-	let operand;
+function identifyNumbers(calcString, operand = null) {
 	let numbers;
-	let result = displayText
 
-	for (const operands of operandsList) {
-		let opIndex = displayText.indexOf(operands);
+	if (operand) {
 
-		// check for negative numbers
-		if (opIndex != -1 
-			&& opIndex != 0 
-			&& !isNaN(+displayText[opIndex - 1])) {
+		numbers = Array.from(calcString.split(operand))
+		
+		// if equal pressed with ex: "2+" "2-" "2/"... equal itself
+		if (numbers.length == 1 && (operand == "+" || operand == "-")) {
+			numbers.push("0")
+		} else if (numbers.length == 1 && (operand == "/" || operand == "*")) {
+			numbers.push("1")
+		}
 
-			operand = operands
-			numbers = displayText.split(operand)
+	} else if (!operand) {
+		numbers = [calcString]
+	}
 
-			// if user pressed equals after only entering a num and / or *...
-			if ((operands == "*" || operands == "/") && (displayText.charAt(opIndex) 
-			== displayText.charAt(displayText.length-1))) {
-				numbers[1] = 1
+	return numbers
+}
+
+console.log(identifyNumbers("4-4", operandsList))
+
+function identifyOperand(calcString, validOperands) {
+	let includesAnOperand = validOperands.some(operand => calcString.includes(operand))
+
+	if (includesAnOperand && calcString.includes("-")) {
+	
+		let minusCount;
+
+		for (const char of calcString) {
+			if (char == "-") {minusCount++}
+		}
+
+		let calcStringIter = calcString
+
+		for (let i = minusCount; i > 0; i--) {
+	
+			let charBeforeIsNan = isNaN(calcStringIter.charAt(calcStringIter.indexOf("-")));
+
+			if (!charBeforeIsNan) {
+				return "-"
+			} else {
+				calcStringIter = calcStringIter.replace("-", "")
 			}
 
-			result = operate(numbers[0], numbers[1], operand)
-			break
 		}
+	} 
+	
+	if (includesAnOperand) {
+		let operandInText = validOperands.some(operand => {
+			if (calcString.includes(operand)) {return operand}
+		})
+		return operandInText
+	} else if (!includesAnOperand) {
+		return null
 	}
-
-	display(result)
 }
 
-function identifyNumbers() {
-	let displayText = document.getElementById("display").innerText;
-
-	// split by operand if one exists
-	for (const operands of operandsList) {
-		let opIndex = displayText.indexOf(operands);
-
-		// don't trigger on negative numbers
-		if (opIndex != -1 
-				&& opIndex != 0 
-				&& !isNaN(+displayText[opIndex - 1])) {
-
-			let operand = operands
-			numbers = Array.from(displayText.split(operand))
-			return numbers
-		}
+function identifyEquation(calcString, validOperands) {
+	let operand = identifyOperand(calcString, validOperands);
+	let numbers = identifyNumbers(calcString, operand);
+	if (operand && numbers.length == 2) {
+		return true
+	} else {
+		return false
 	}
-	number = [displayText]
-	return number
 }
 
-function identifyEquation() {
-	let displayText = document.getElementById("display").innerText;
+console.log(identifyEquation("4-4", operandsList))
+console.log(identifyEquation("-4", operandsList))
 
-	// is there an operand?
-
-		// if minus: are there any other operands?
-		// yes - minus is for a neg num
-		// no - minus is operand. identify neg numbers
-
-		// if not minus:
-		// identify numbers on both sides
+function equals(calcString, validOperands) {
+	let equationExists = identifyEquation(calcString, validOperands)
+	
+	if (!equationExists) {
+		display(calcString)
+	} else {
+		let numbers = identifyNumbers(calcString, validOperands)
+		let operand = identifyOperand(calcString, validOperands)
+		display(operate(numbers[0], numbers[1], operand))
+	}
 }
 
 function operandPress(buttPressed) {
@@ -125,23 +143,24 @@ function operandPress(buttPressed) {
   let displayText = document.getElementById("display").innerText;
 
 	let includesAnOperand = operandsList.some(operand => displayText.includes(operand))
-	console.log("includes an operand is " + includesAnOperand)
 
 	if (displayText == divideByZeroMsg) {
 		clear()
+	}
+}
 
-	} else if (operandText == "-") { // handle negatives...
-		firstEntry = displayText.length == 0
-		doubleMinusAtStart = displayText.length == 1 && displayText.charAt(0) == "-"
-		tripleMinus = displayText.slice(-2) == "--"
+	// } else if (operandText == "-") { // handle negatives...
+	// 	firstEntry = displayText.length == 0
+	// 	doubleMinusAtStart = displayText.length == 1 && displayText.charAt(0) == "-"
+	// 	tripleMinus = displayText.slice(-2) == "--"
 
-		if (displayText.length == 0) {
-			numberPress(buttPressed)
-		} else if (!doubleMinusAtStart && !tripleMinus) {
-			numberPress(buttPressed)
-		}
+	// 	if (displayText.length == 0) {
+	// 		numberPress(buttPressed)
+	// 	} else if (!doubleMinusAtStart && !tripleMinus) {
+	// 		numberPress(buttPressed)
+	// 	}
 
-		equationExists = 
+		// equationExists = 
 		
 		// doubleMinusAtStart = displayText.length > 1 && displayText.charAt(0) == "-"
 		// tripleMinus = displayText.slice(displayText.length-2, displayText.length-1) == "--"
@@ -165,20 +184,19 @@ function operandPress(buttPressed) {
 
 		// numberPress(buttPressed)
 		
-	} else if (includesAnOperand && displayText.charAt(displayText.length-1) != "-") {
-		console.log("includes operand and it's not minus")
-		equals(operandText)
-		numberPress(buttPressed) 
-	} else if (displayText.charAt(displayText.length-1) == ".") {
-		displayText += "0"
-		display(displayText)
-		numberPress(buttPressed)
-	}	else if (displayText.length == 1 && displayText.charAt(displayText.length-1) == "-") {
-		return
-	} else if (displayText.length != 0) {
-		numberPress(buttPressed)
-	}
-}
+	// } else if (includesAnOperand && displayText.charAt(displayText.length-1) != "-") {
+	// 	equals(operandText)
+	// 	numberPress(buttPressed) 
+	// } else if (displayText.charAt(displayText.length-1) == ".") {
+	// 	displayText += "0"
+	// 	display(displayText)
+	// 	numberPress(buttPressed)
+	// }	else if (displayText.length == 1 && displayText.charAt(displayText.length-1) == "-") {
+	// 	return
+	// } else if (displayText.length != 0) {
+	// 	numberPress(buttPressed)
+	// }
+
 
 function decimal() {
 	let displayText = document.getElementById("display").innerText;
