@@ -107,42 +107,77 @@ function identifyNumbers() {
 	return number
 }
 
+function identifyEquation() {
+	let displayText = document.getElementById("display").innerText;
+
+	// is there an operand?
+
+		// if minus: are there any other operands?
+		// yes - minus is for a neg num
+		// no - minus is operand. identify neg numbers
+
+		// if not minus:
+		// identify numbers on both sides
+}
+
 function operandPress(buttPressed) {
   let operandText = buttPressed.innerText;
   let displayText = document.getElementById("display").innerText;
 
 	let includesAnOperand = operandsList.some(operand => displayText.includes(operand))
+	console.log("includes an operand is " + includesAnOperand)
 
 	if (displayText == divideByZeroMsg) {
 		clear()
 
 	} else if (operandText == "-") { // handle negatives...
+		firstEntry = displayText.length == 0
+		doubleMinusAtStart = displayText.length == 1 && displayText.charAt(0) == "-"
+		tripleMinus = displayText.slice(-2) == "--"
+
+		if (displayText.length == 0) {
+			numberPress(buttPressed)
+		} else if (!doubleMinusAtStart && !tripleMinus) {
+			numberPress(buttPressed)
+		}
+
+		equationExists = 
 		
-		doubleMinusAtStart = displayText.length > 1 && displayText.charAt(0) == "-"
-		tripleMinus = displayText.slice(displayText.length-2, displayText.length-1) == "--"
-		minusAtEnd = identifyNumbers().length > 1
+		// doubleMinusAtStart = displayText.length > 1 && displayText.charAt(0) == "-"
+		// tripleMinus = displayText.slice(displayText.length-2, displayText.length-1) == "--"
+		// minusAtEnd = identifyNumbers().length > 1
 
-		if (doubleMinusAtStart || tripleMinus || minusAtEnd) {
-			console.log("invalid minus")
-			return // do nothing if invalid "-"
-		}
+		// console.log(doubleMinusAtStart + " " + tripleMinus + " " + minusAtEnd)
 
-		minusAtStart = displayText.length == 0 & operandText == "-"
+		// if (doubleMinusAtStart || tripleMinus) {
+		// 	console.log("invalid minus")
+		// 	return // do nothing if invalid "-"
+		// } else if (minusAtEnd) {
+		// 	equals(operandText)
 
-		if (minusAtStart) {
-			nnumberPress(buttPressed)
-		}
+		// }
 
-	} else if (includesAnOperand) {
+		// minusAtStart = displayText.length == 1 && displayText == "-"
+
+		// if (minusAtStart) {
+		// 	return
+		// }
+
+		// numberPress(buttPressed)
+		
+	} else if (includesAnOperand && displayText.charAt(displayText.length-1) != "-") {
+		console.log("includes operand and it's not minus")
 		equals(operandText)
 		numberPress(buttPressed) 
 	} else if (displayText.charAt(displayText.length-1) == ".") {
 		displayText += "0"
 		display(displayText)
 		numberPress(buttPressed)
-	}	else if (displayText.length != 0) {
+	}	else if (displayText.length == 1 && displayText.charAt(displayText.length-1) == "-") {
+		return
+	} else if (displayText.length != 0) {
 		numberPress(buttPressed)
-	} 
+	}
 }
 
 function decimal() {
