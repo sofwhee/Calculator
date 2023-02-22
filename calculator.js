@@ -14,7 +14,7 @@ function multiply(num1, num2) {
   return num1 * num2;
 }
 
-const operandsList = ["+", "-", "*", "/"];
+const operandsList = ["+", "-", "*", "/"]
 const divideByZeroMsg = "no!"
 
 function operate(num1, num2, operand) {
@@ -88,6 +88,8 @@ function identifyOperand(calcString, validOperands) {
 	let includesAnOperand = validOperands.some(operand => calcString.includes(operand))
 
 	if (includesAnOperand && calcString.includes("-")) {
+		console.log("minus handling")
+
 		// handling minuses
 		let minusCount;
 
@@ -110,10 +112,15 @@ function identifyOperand(calcString, validOperands) {
 	} 
 	
 	if (includesAnOperand) {
+		let operandInText;
+
 		// find operand in text
-		let operandInText = validOperands.forEach(operand => {
-			if (calcString.includes(operand)) {return operand}
-		})
+		for (let i = 0; i != validOperands.length; i++)
+			{
+				if (calcString.includes(validOperands[i])) {
+					operandInText = validOperands[i]
+				}
+			}
 
 		return operandInText
 	}
@@ -123,6 +130,9 @@ function identifyOperand(calcString, validOperands) {
 }
 
 console.log("identify plus test: " + identifyOperand("4+4", operandsList))
+console.log("identify subt test: " + identifyOperand("4-4", operandsList))
+console.log("identify divis test: " + identifyOperand("4/4", operandsList))
+console.log("identify mult test: " + identifyOperand("4*4", operandsList))
 
 function identifyEquation(calcString, validOperands) {
 	let operand = identifyOperand(calcString, validOperands);
@@ -134,8 +144,8 @@ function identifyEquation(calcString, validOperands) {
 	}
 }
 
-console.log(identifyEquation("4-4", operandsList))
-console.log(identifyEquation("-4", operandsList))
+// console.log(identifyEquation("4-4", operandsList))
+// console.log(identifyEquation("-4", operandsList))
 
 function equals(calcString, validOperands) {
 	let equationExists = identifyEquation(calcString, validOperands)
