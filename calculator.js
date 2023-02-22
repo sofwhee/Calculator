@@ -54,34 +54,41 @@ function numberPress(buttPressed) {
   display(textToDisplay);
 }
 
-function identifyNumbers(calcString, operand = null) {
+function identifyNumbers(calcString, operandInText = null) {
 	let numbers;
 
-	if (operand) {
+	if (operandInText) {
 
-		numbers = Array.from(calcString.split(operand))
-		
-		// if equal pressed with ex: "2+" "2-" "2/"... equal itself
-		if (numbers.length == 1 && (operand == "+" || operand == "-")) {
+		numbers = Array.from(calcString.split(operandInText))
+
+		if (numbers[1] == "") {
+			numbers.pop()
+		}
+
+		// if equal pressed with "2+" "2-" "2/"...
+		if (numbers.length == 1 && (operandInText == "+" || operandInText == "-")) {
 			numbers.push("0")
-		} else if (numbers.length == 1 && (operand == "/" || operand == "*")) {
+		} else if (numbers.length == 1 && (operandInText == "/" || operandInText == "*")) {
 			numbers.push("1")
 		}
 
-	} else if (!operand) {
+	} else {
 		numbers = [calcString]
 	}
 
 	return numbers
 }
 
-console.log(identifyNumbers("4-4", operandsList))
+console.log("empty divis test: " + identifyNumbers("4/", "/"))
+console.log("empty mult test: " + identifyNumbers("4*", "*"))
+console.log("empty subt test: " + identifyNumbers("4-", "-"))
+console.log("empty add test: " + identifyNumbers("4+", "+"))
 
 function identifyOperand(calcString, validOperands) {
 	let includesAnOperand = validOperands.some(operand => calcString.includes(operand))
 
 	if (includesAnOperand && calcString.includes("-")) {
-	
+		// handling minuses
 		let minusCount;
 
 		for (const char of calcString) {
@@ -99,19 +106,23 @@ function identifyOperand(calcString, validOperands) {
 			} else {
 				calcStringIter = calcStringIter.replace("-", "")
 			}
-
 		}
 	} 
 	
 	if (includesAnOperand) {
-		let operandInText = validOperands.some(operand => {
+		// find operand in text
+		let operandInText = validOperands.forEach(operand => {
 			if (calcString.includes(operand)) {return operand}
 		})
+
 		return operandInText
-	} else if (!includesAnOperand) {
-		return null
 	}
+
+	// no operand found
+	return null
 }
+
+console.log("identify plus test: " + identifyOperand("4+4", operandsList))
 
 function identifyEquation(calcString, validOperands) {
 	let operand = identifyOperand(calcString, validOperands);
