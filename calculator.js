@@ -149,6 +149,9 @@ function identifyOperand(calcString, validOperands) {
 function identifyEquation(calcString, validOperands) {
 	let operand = identifyOperand(calcString, validOperands);
 	let numbers = identifyNumbers(calcString, operand);
+
+	console.log("operand: " + operand + " numbers: " + numbers)
+
 	if (operand && numbers.length == 2) {
 		return true
 	} else {
@@ -156,8 +159,13 @@ function identifyEquation(calcString, validOperands) {
 	}
 }
 
-console.log("identify equation true test: " + identifyEquation("4-4", operandsList))
 console.log("identify equation false test: " + identifyEquation("-4", operandsList))
+
+console.log("identify equation true sub: " + identifyEquation("4-4", operandsList))
+console.log("identify equation true div: " + identifyEquation("4/4", operandsList))
+console.log("identify equation true mult: " + identifyEquation("4*4", operandsList))
+console.log("identify equation true add: " + identifyEquation("4+4", operandsList))
+
 console.log("identify equation true test with negatives: " + identifyEquation("-4-4", operandsList))
 console.log("identify equation true test with double negatives: " + identifyEquation("-4--4", operandsList))
 
