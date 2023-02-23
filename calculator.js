@@ -87,15 +87,14 @@ function identifyNumbers(calcString, operandInText = null) {
 function identifyOperand(calcString, validOperands) {
 	let includesAnOperand = validOperands.some(operand => calcString.includes(operand))
 
-	// negative num identifying minuses may be removed from this var
+	// Negative num identifying minuses may be removed from this var 
+	// 	during minus handling process.
 	let calcStringIter = calcString
 
 	// minus handling
 	if (includesAnOperand && calcString.includes("-")) {
 
-		// count minuses
 		let minusCount = 0;
-
 		for (const char of calcString) {
 			if (char == "-") {minusCount++}
 		}
@@ -124,13 +123,11 @@ function identifyOperand(calcString, validOperands) {
 	if (includesAnOperand) {
 		let operandInText;
 
-		// find operand in text
-		for (let i = 0; i != validOperands.length; i++)
-			{
-				if (calcStringIter.includes(validOperands[i])) {
-					operandInText = validOperands[i]
-				}
+		for (let i = 0; i != validOperands.length; i++) {
+			if (calcStringIter.includes(validOperands[i])) {
+				operandInText = validOperands[i]
 			}
+		}
 
 		return operandInText
 	}
@@ -139,15 +136,15 @@ function identifyOperand(calcString, validOperands) {
 	return null
 }
 
-console.log("identify plus test: " + identifyOperand("4+4", operandsList))
-console.log("identify subt test: " + identifyOperand("4-4", operandsList))
-console.log("identify divis test: " + identifyOperand("4/4", operandsList))
-console.log("identify mult test: " + identifyOperand("4*4", operandsList))
+// console.log("identify plus test: " + identifyOperand("4+4", operandsList))
+// console.log("identify subt test: " + identifyOperand("4-4", operandsList))
+// console.log("identify divis test: " + identifyOperand("4/4", operandsList))
+// console.log("identify mult test: " + identifyOperand("4*4", operandsList))
 
-console.log("identify plus test with negatives: " + identifyOperand("-4+-4", operandsList))
-console.log("identify divis test with negatives: " + identifyOperand("-4/-4", operandsList))
-console.log("identify mult test with negatives: " + identifyOperand("-4*-4", operandsList))
-console.log("identify minus test with negatives: " + identifyOperand("-4--4", operandsList))
+// console.log("identify plus test with negatives: " + identifyOperand("-4+-4", operandsList))
+// console.log("identify divis test with negatives: " + identifyOperand("-4/-4", operandsList))
+// console.log("identify mult test with negatives: " + identifyOperand("-4*-4", operandsList))
+// console.log("identify minus test with negatives: " + identifyOperand("-4--4", operandsList))
 
 function identifyEquation(calcString, validOperands) {
 	let operand = identifyOperand(calcString, validOperands);
@@ -159,8 +156,10 @@ function identifyEquation(calcString, validOperands) {
 	}
 }
 
-// console.log("identify equation true test: " + identifyEquation("4-4", operandsList))
-// console.log("identify equation false test: " + identifyEquation("-4", operandsList))
+console.log("identify equation true test: " + identifyEquation("4-4", operandsList))
+console.log("identify equation false test: " + identifyEquation("-4", operandsList))
+console.log("identify equation true test with negatives: " + identifyEquation("-4-4", operandsList))
+console.log("identify equation true test with double negatives: " + identifyEquation("-4--4", operandsList))
 
 function equals(calcString, validOperands) {
 	let equationExists = identifyEquation(calcString, validOperands)
