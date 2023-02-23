@@ -79,34 +79,44 @@ function identifyNumbers(calcString, operandInText = null) {
 	return numbers
 }
 
-console.log("empty divis test: " + identifyNumbers("4/", "/"))
-console.log("empty mult test: " + identifyNumbers("4*", "*"))
-console.log("empty subt test: " + identifyNumbers("4-", "-"))
-console.log("empty add test: " + identifyNumbers("4+", "+"))
+// console.log("empty divis test: " + identifyNumbers("4/", "/"))
+// console.log("empty mult test: " + identifyNumbers("4*", "*"))
+// console.log("empty subt test: " + identifyNumbers("4-", "-"))
+// console.log("empty add test: " + identifyNumbers("4+", "+"))
 
 function identifyOperand(calcString, validOperands) {
 	let includesAnOperand = validOperands.some(operand => calcString.includes(operand))
 
-	if (includesAnOperand && calcString.includes("-")) {
-		console.log("minus handling")
+	// negative num identifying minuses may be removed from this var
+	let calcStringIter = calcString
 
-		// handling minuses
-		let minusCount;
+	// minus handling
+	if (includesAnOperand && calcString.includes("-")) {
+
+		// count minuses
+		let minusCount = 0;
 
 		for (const char of calcString) {
 			if (char == "-") {minusCount++}
 		}
 
-		let calcStringIter = calcString
+		// for each minus symbol found in equation,
+		// check if first minus in string is after a number
+		// if not, then remove that minus
 
 		for (let i = minusCount; i > 0; i--) {
-	
-			let charBeforeIsNan = isNaN(calcStringIter.charAt(calcStringIter.indexOf("-")));
+
+			let minusIndex = calcStringIter.indexOf("-");
+			let charBeforeMinus = calcStringIter.charAt(minusIndex - 1);
+			let charBeforeIsNan = Number.isNaN(parseFloat(charBeforeMinus))
+
+			// console.log("charbefore: " + charBeforeMinus + " is it NaN?: " + charBeforeIsNan)
 
 			if (!charBeforeIsNan) {
 				return "-"
 			} else {
 				calcStringIter = calcStringIter.replace("-", "")
+				// console.log("next string: " + calcStringIter)
 			}
 		}
 	} 
@@ -117,7 +127,7 @@ function identifyOperand(calcString, validOperands) {
 		// find operand in text
 		for (let i = 0; i != validOperands.length; i++)
 			{
-				if (calcString.includes(validOperands[i])) {
+				if (calcStringIter.includes(validOperands[i])) {
 					operandInText = validOperands[i]
 				}
 			}
@@ -134,6 +144,11 @@ console.log("identify subt test: " + identifyOperand("4-4", operandsList))
 console.log("identify divis test: " + identifyOperand("4/4", operandsList))
 console.log("identify mult test: " + identifyOperand("4*4", operandsList))
 
+console.log("identify plus test with negatives: " + identifyOperand("-4+-4", operandsList))
+console.log("identify divis test with negatives: " + identifyOperand("-4/-4", operandsList))
+console.log("identify mult test with negatives: " + identifyOperand("-4*-4", operandsList))
+console.log("identify minus test with negatives: " + identifyOperand("-4--4", operandsList))
+
 function identifyEquation(calcString, validOperands) {
 	let operand = identifyOperand(calcString, validOperands);
 	let numbers = identifyNumbers(calcString, operand);
@@ -144,8 +159,8 @@ function identifyEquation(calcString, validOperands) {
 	}
 }
 
-// console.log(identifyEquation("4-4", operandsList))
-// console.log(identifyEquation("-4", operandsList))
+// console.log("identify equation true test: " + identifyEquation("4-4", operandsList))
+// console.log("identify equation false test: " + identifyEquation("-4", operandsList))
 
 function equals(calcString, validOperands) {
 	let equationExists = identifyEquation(calcString, validOperands)
