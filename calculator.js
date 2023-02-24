@@ -55,34 +55,77 @@ function numberPress(buttPressed) {
 }
 
 function identifyNumbers(calcString, operandInText = null) {
-	let numbers;
+	// let numbers;
+
+	let numList = [];
 
 	if (operandInText) {
 
-		numbers = Array.from(calcString.split(operandInText))
+		let currNum = "";
 
-		if (numbers[1] == "") {
-			numbers.pop()
+		for (let charIndex in calcString) {
+			let char = calcString[charIndex];
+			let nextChar = calcString[+charIndex + 1];
+			let lastChar = calcString[+charIndex - 1];
+
+			let charIsNum = !Number.isNaN(parseFloat(char));
+			let nextCharIsNum = !Number.isNaN(parseFloat(nextChar));
+			let lastCharIsNum = !Number.isNaN(parseFloat(lastChar));
+
+			let charIsOperand = !charIsNum && lastCharIsNum && nextCharIsNum;
+			let operandFollowedByNeg = !charIsNum && !nextCharIsNum;
+			let negFollowingOperand = char == "-" && !lastCharIsNum && nextCharIsNum;
+			
+			if (charIsOperand || operandFollowedByNeg) {
+				currNum = "";
+			} else if (negFollowingOperand) {
+				currNum = currNum.concat(char);
+			} else if (charIsNum && nextCharIsNum) {
+				currNum = currNum.concat(char);
+			} else if (charIsNum) {
+				currNum = currNum.concat(char);
+				numList.push(currNum);
+				currNum = "";
+			}
 		}
 
-		// if equal pressed with "2+" "2-" "2/"...
-		if (numbers.length == 1 && (operandInText == "+" || operandInText == "-")) {
-			numbers.push("0")
-		} else if (numbers.length == 1 && (operandInText == "/" || operandInText == "*")) {
-			numbers.push("1")
-		}
+	// } else if (operandInText) {
+	// 	console.log("numbers list: " + numList)
 
-	} else {
-		numbers = [calcString]
-	}
+	// 	numbers = Array.from(calcString.split(operandInText))
 
-	return numbers
+	// 	console.log("string: " + calcString + " numbers: " + numbers)
+
+	// 	if (numbers[1] == "") {
+	// 		numbers.pop()
+	// 	}
+
+	// 	// if equal pressed with "2+" "2-" "2/"...
+	// 	if (numbers.length == 1 && (operandInText == "+" || operandInText == "-")) {
+	// 		numbers.push("0")
+	// 	} else if (numbers.length == 1 && (operandInText == "/" || operandInText == "*")) {
+	// 		numbers.push("1")
+	// 	}
+
+	} else {numList = [calcString]}
+
+	return numList
 }
 
-// console.log("empty divis test: " + identifyNumbers("4/", "/"))
-// console.log("empty mult test: " + identifyNumbers("4*", "*"))
-// console.log("empty subt test: " + identifyNumbers("4-", "-"))
-// console.log("empty add test: " + identifyNumbers("4+", "+"))
+console.log("empty divis test: " + identifyNumbers("4/", "/"))
+console.log("empty mult test: " + identifyNumbers("4*", "*"))
+console.log("empty subt test: " + identifyNumbers("4-", "-"))
+console.log("empty add test: " + identifyNumbers("4+", "+"))
+
+console.log("add test: " + identifyNumbers("4+4", "+"))
+console.log("minus test: " + identifyNumbers("224-4", "-"))
+console.log("divis test: " + identifyNumbers("423/4323", "/"))
+console.log("mult test: " + identifyNumbers("4*4", "*"))
+
+console.log("add test: " + identifyNumbers("-422+-4", "+"))
+console.log("minus test: " + identifyNumbers("-422--4", "-"))
+console.log("divis test: " + identifyNumbers("-422/-4", "/"))
+console.log("mult test: " + identifyNumbers("-422*-4", "*"))
 
 function identifyOperand(calcString, validOperands) {
 	let includesAnOperand = validOperands.some(operand => calcString.includes(operand))
@@ -150,8 +193,6 @@ function identifyEquation(calcString, validOperands) {
 	let operand = identifyOperand(calcString, validOperands);
 	let numbers = identifyNumbers(calcString, operand);
 
-	console.log("operand: " + operand + " numbers: " + numbers)
-
 	if (operand && numbers.length == 2) {
 		return true
 	} else {
@@ -159,14 +200,14 @@ function identifyEquation(calcString, validOperands) {
 	}
 }
 
-console.log("identify equation false test: " + identifyEquation("-4", operandsList))
+// console.log("identify equation false test: " + identifyEquation("-4", operandsList))
 
-console.log("identify equation true sub: " + identifyEquation("4-4", operandsList))
-console.log("identify equation true div: " + identifyEquation("4/4", operandsList))
-console.log("identify equation true mult: " + identifyEquation("4*4", operandsList))
-console.log("identify equation true add: " + identifyEquation("4+4", operandsList))
+// console.log("identify equation true sub: " + identifyEquation("4-4", operandsList))
+// console.log("identify equation true div: " + identifyEquation("4/4", operandsList))
+// console.log("identify equation true mult: " + identifyEquation("4*4", operandsList))
+// console.log("identify equation true add: " + identifyEquation("4+4", operandsList))
 
-console.log("identify equation true test with negatives: " + identifyEquation("-4-4", operandsList))
+// console.log("identify equation true test with negatives: " + identifyEquation("-4-4", operandsList))
 console.log("identify equation true test with double negatives: " + identifyEquation("-4--4", operandsList))
 
 function equals(calcString, validOperands) {
