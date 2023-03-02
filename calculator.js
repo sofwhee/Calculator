@@ -1,3 +1,6 @@
+const operandsList = ["+", "-", "*", "/"]
+const divideByZeroMsg = "no!"
+
 function add(num1, num2) {
   return num1 + num2;
 }
@@ -13,9 +16,6 @@ function divide(num1, num2) {
 function multiply(num1, num2) {
   return num1 * num2;
 }
-
-const operandsList = ["+", "-", "*", "/"]
-const divideByZeroMsg = "no!"
 
 function operate(num1, num2, operand) {
 	if (isNaN(num1) || isNaN(num2)) {return false}
@@ -219,56 +219,6 @@ function operandPress(buttPressed) {
 		console.log('triple operand')
 	}
 }
-
-	// } else if (operandText == "-") { // handle negatives...
-	// 	firstEntry = displayText.length == 0
-	// 	doubleMinusAtStart = displayText.length == 1 && displayText.charAt(0) == "-"
-	// 	tripleMinus = displayText.slice(-2) == "--"
-
-	// 	if (displayText.length == 0) {
-	// 		numberPress(buttPressed)
-	// 	} else if (!doubleMinusAtStart && !tripleMinus) {
-	// 		numberPress(buttPressed)
-	// 	}
-
-		// equationExists = 
-		
-		// doubleMinusAtStart = displayText.length > 1 && displayText.charAt(0) == "-"
-		// tripleMinus = displayText.slice(displayText.length-2, displayText.length-1) == "--"
-		// minusAtEnd = identifyNumbers().length > 1
-
-		// console.log(doubleMinusAtStart + " " + tripleMinus + " " + minusAtEnd)
-
-		// if (doubleMinusAtStart || tripleMinus) {
-		// 	console.log("invalid minus")
-		// 	return // do nothing if invalid "-"
-		// } else if (minusAtEnd) {
-		// 	equals(operandText)
-
-		// }
-
-		// minusAtStart = displayText.length == 1 && displayText == "-"
-
-		// if (minusAtStart) {
-		// 	return
-		// }
-
-		// numberPress(buttPressed)
-		
-	// } else if (includesAnOperand && displayText.charAt(displayText.length-1) != "-") {
-	// 	equals(operandText)
-	// 	numberPress(buttPressed) 
-	// } else if (displayText.charAt(displayText.length-1) == ".") {
-	// 	displayText += "0"
-	// 	display(displayText)
-	// 	numberPress(buttPressed)
-	// }	else if (displayText.length == 1 && displayText.charAt(displayText.length-1) == "-") {
-	// 	return
-	// } else if (displayText.length != 0) {
-	// 	numberPress(buttPressed)
-	// }
-
-
 
 function decimal() {
 	let displayText = document.getElementById("display").innerText;
