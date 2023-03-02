@@ -89,28 +89,16 @@ function identifyNumbers(calcString, operandInText = null) {
 				currNum = "";
 			}
 		}
-	} else {numList = [calcString]}
+
+	} else {
+		numList = [calcString]
+	}
 
 	return numList
 }
 
-// console.log("empty divis test: " + identifyNumbers("4/", "/"))
-// console.log("empty mult test: " + identifyNumbers("4*", "*"))
-// console.log("empty subt test: " + identifyNumbers("4-", "-"))
-// console.log("empty add test: " + identifyNumbers("4+", "+"))
-
-// console.log("add test: " + identifyNumbers("4+4", "+"))
-// console.log("minus test: " + identifyNumbers("224-4", "-"))
-// console.log("divis test: " + identifyNumbers("423/4323", "/"))
-// console.log("mult test: " + identifyNumbers("4*4", "*"))
-
-// console.log("add test: " + identifyNumbers("-422+-4", "+"))
-// console.log("minus test: " + identifyNumbers("-422--4", "-"))
-// console.log("divis test: " + identifyNumbers("-422/-4", "/"))
-// console.log("mult test: " + identifyNumbers("-422*-4", "*"))
-
-function identifyOperand(calcString, validOperands) {
-	let includesAnOperand = validOperands.some(operand => calcString.includes(operand))
+function identifyOperand(calcString) {
+	let includesAnOperand = operandsList.some(operand => calcString.includes(operand))
 
 	// Negative num identifying minuses may be removed from this var 
 	// 	during minus handling process.
@@ -134,13 +122,10 @@ function identifyOperand(calcString, validOperands) {
 			let charBeforeMinus = calcStringIter.charAt(minusIndex - 1);
 			let charBeforeIsNan = Number.isNaN(parseFloat(charBeforeMinus))
 
-			// console.log("charbefore: " + charBeforeMinus + " is it NaN?: " + charBeforeIsNan)
-
 			if (!charBeforeIsNan) {
 				return "-"
 			} else {
 				calcStringIter = calcStringIter.replace("-", "")
-				// console.log("next string: " + calcStringIter)
 			}
 		}
 	} 
@@ -148,9 +133,9 @@ function identifyOperand(calcString, validOperands) {
 	if (includesAnOperand) {
 		let operandInText;
 
-		for (let i = 0; i != validOperands.length; i++) {
-			if (calcStringIter.includes(validOperands[i])) {
-				operandInText = validOperands[i]
+		for (let i = 0; i != operandsList.length; i++) {
+			if (calcStringIter.includes(operandsList[i])) {
+				operandInText = operandsList[i]
 			}
 		}
 
@@ -161,18 +146,8 @@ function identifyOperand(calcString, validOperands) {
 	return null
 }
 
-// console.log("identify plus test: " + identifyOperand("4+4", operandsList))
-// console.log("identify subt test: " + identifyOperand("4-4", operandsList))
-// console.log("identify divis test: " + identifyOperand("4/4", operandsList))
-// console.log("identify mult test: " + identifyOperand("4*4", operandsList))
-
-// console.log("identify plus test with negatives: " + identifyOperand("-4+-4", operandsList))
-// console.log("identify divis test with negatives: " + identifyOperand("-4/-4", operandsList))
-// console.log("identify mult test with negatives: " + identifyOperand("-4*-4", operandsList))
-// console.log("identify minus test with negatives: " + identifyOperand("-4--4", operandsList))
-
-function identifyEquation(calcString, validOperands) {
-	let operand = identifyOperand(calcString, validOperands);
+function identifyEquation(calcString) {
+	let operand = identifyOperand(calcString, operandsList);
 	let numbers = identifyNumbers(calcString, operand);
 
 	if (operand && numbers.length == 2) {
@@ -182,39 +157,66 @@ function identifyEquation(calcString, validOperands) {
 	}
 }
 
-// console.log("identify equation false test: " + identifyEquation("-4", operandsList))
-
-// console.log("identify equation true sub: " + identifyEquation("4-4", operandsList))
-// console.log("identify equation true div: " + identifyEquation("4/4", operandsList))
-// console.log("identify equation true mult: " + identifyEquation("4*4", operandsList))
-// console.log("identify equation true add: " + identifyEquation("4+4", operandsList))
-
-// console.log("identify equation true test with negatives: " + identifyEquation("-4-4", operandsList))
-// console.log("identify equation true test with double negatives: " + identifyEquation("-4--4", operandsList))
-
-// console.log("identify equation false test with negatives: " + identifyEquation("-44", operandsList))
-// console.log("identify equation false test with double negatives: " + identifyEquation("-4--", operandsList))
-
-function equals(calcString, validOperands) {
-	let equationExists = identifyEquation(calcString, validOperands)
+function equals() {
+	let displayText = document.getElementById("display").innerText
+	let equationExists = identifyEquation(displayText)
 	
 	if (!equationExists) {
-		display(calcString)
+		display(displayText)
 	} else {
-		let numbers = identifyNumbers(calcString, validOperands)
-		let operand = identifyOperand(calcString, validOperands)
+		let operand = identifyOperand(displayText)
+		let numbers = identifyNumbers(displayText, operand)
 		display(operate(numbers[0], numbers[1], operand))
 	}
 }
 
 function operandPress(buttPressed) {
-  let operandText = buttPressed.innerText;
-  let displayText = document.getElementById("display").innerText;
 
-	let includesAnOperand = operandsList.some(operand => displayText.includes(operand))
+  let displayText = document.getElementById("display").innerText;
+	
+	if (displayText == divideByZeroMsg) {
+		clear()
+		return
+	}
+
+	let currOperand = buttPressed.innerText;
+	let minus = currOperand == "-";
+	
+	let prevChar = displayText.charAt(displayText.length - 1);
+	let prevCharIsOp = operandsList.some(operand => operand == currOperand);
+	let prevCharIsNum = !Number.isNaN(parseFloat(prevChar));
+	let isFirstChar = displayText.length = 0;
+	let afterOperand = identifyOperand(displayText, operandsList);
+	let afterEquation = identifyEquation(displayText, operandsList);
+	function tripleOperandCheck() {
+		if (displayText.length > 2) {
+			let lastTwoChars = displayText.slice(-2).split('')
+			const isOperand = (character) => operandsList.some(operand => character == operand)
+			return lastTwoChars.every(isOperand)
+		}
+	}
+	let tripleOperand = tripleOperandCheck()
+
+	let minusFirstChar = isFirstChar && minus;
+	let isOperator = prevCharIsNum && !afterEquation;
+	let minusAfterOp = minus && prevCharIsOp && !tripleOperand && !afterEquation;
+	let secondOperator = prevCharIsNum && afterEquation;
+
+	let normalValidPress = minusFirstChar || isOperator || minusAfterOp;
 
 	if (displayText == divideByZeroMsg) {
 		clear()
+		console.log('clear message')
+	} else if (normalValidPress) {
+		numberPress(buttPressed)
+		console.log('normal valid press')
+	} else if (secondOperator) {
+		let numbers = identifyNumbers(displayText, currOperand);
+		let result = operate(numbers[0], numbers[1], identifyOperand(displayText, operandsList));
+		display(result + currOperand)
+		console.log('second operator')
+	} else if (tripleOperand) {
+		console.log('triple operand')
 	}
 }
 
@@ -265,6 +267,7 @@ function operandPress(buttPressed) {
 	// } else if (displayText.length != 0) {
 	// 	numberPress(buttPressed)
 	// }
+
 
 
 function decimal() {
