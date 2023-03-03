@@ -22,14 +22,14 @@ function operate(num1, num2, operand) {
 
   switch (operand) {
     case "+":
-      return add(+num1, +num2);
+      return Math.round(add(+num1, +num2) * 100) / 100;
     case "-":
-      return subtract(+num1, +num2);
+      return Math.round(subtract(+num1, +num2) * 100) / 100;
     case "/":
 			if (num2 == 0) {return divideByZeroMsg}
-      return parseFloat(divide(+num1, +num2).toFixed(5));
+      return Math.round(divide(+num1, +num2) * 100) / 100;
     case "*":
-      return multiply(+num1, +num2);
+      return Math.round(multiply(+num1, +num2) * 100) / 100;
   }
 }
 
@@ -54,46 +54,47 @@ function numberPress(buttPressed) {
   display(textToDisplay);
 }
 
-function identifyNumbers(calcString, operandInText = null) {
+function identifyNumbers(calcString) {
 	// let numbers;
 
+	let operandInText = identifyOperand(calcString)
+
 	let numList = [];
+	let currNum = "";
 
-	if (operandInText) {
+	for (let charIndex in calcString) {
+		// identify characters for evaluation
+		let char = calcString[charIndex];
+		let nextChar = calcString[+charIndex + 1];
+		let lastChar = calcString[+charIndex - 1];
 
-		let currNum = "";
+		// evaluate characters as num
+		let charIsNum = !Number.isNaN(parseFloat(char)) || char == ".";
+		let nextCharIsNum = !Number.isNaN(parseFloat(nextChar)) || nextChar == ".";
+		let lastCharIsNum = !Number.isNaN(parseFloat(lastChar)) || lastChar == ".";
 
-		for (let charIndex in calcString) {
+		let charIsNegMinus = !lastCharIsNum && nextCharIsNum
 
-			let char = calcString[charIndex];
-			let nextChar = calcString[+charIndex + 1];
-			let lastChar = calcString[+charIndex - 1];
+		let num = charIsNum || charIsNegMinus
 
-			let charIsNum = !Number.isNaN(parseFloat(char));
-			let nextCharIsNum = !Number.isNaN(parseFloat(nextChar));
-			let lastCharIsNum = !Number.isNaN(parseFloat(lastChar));
+		// evaluate character as operand
+		let nanBetweenNums = lastCharIsNum && !charIsNum && nextCharIsNum;
+		let currNanNextNan = !charIsNum && !nextCharIsNum;
 
-			let charIsOperand = !charIsNum && lastCharIsNum && nextCharIsNum;
-			let operandFollowedByNeg = !charIsNum && !nextCharIsNum;
-			let negFollowingOperand = char == "-" && !lastCharIsNum && nextCharIsNum;
-			
-			if (charIsOperand || operandFollowedByNeg) {
-				currNum = "";
-			} else if (negFollowingOperand) {
-				currNum = currNum.concat(char);
-			} else if (charIsNum && nextCharIsNum) {
-				currNum = currNum.concat(char);
-			} else if (charIsNum) {
-				currNum = currNum.concat(char);
-				numList.push(currNum);
-				currNum = "";
-			}
+		let charIsOperand = nanBetweenNums || currNanNextNan;	
+		// conditionals
+
+		if (charIsOperand) {
+			numList.push(currNum)
+			currNum = "";
+		} else if (num) {
+			currNum = currNum.concat(char);
+		} else {
+			console.log("something went wrong")
 		}
-
-	} else {
-		numList = [calcString]
 	}
 
+	numList.push(currNum)
 	return numList
 }
 
@@ -148,7 +149,7 @@ function identifyOperand(calcString) {
 
 function identifyEquation(calcString) {
 	let operand = identifyOperand(calcString, operandsList);
-	let numbers = identifyNumbers(calcString, operand);
+	let numbers = identifyNumbers(calcString);
 
 	if (operand && numbers.length == 2) {
 		return true
@@ -165,7 +166,7 @@ function equals() {
 		display(displayText)
 	} else {
 		let operand = identifyOperand(displayText)
-		let numbers = identifyNumbers(displayText, operand)
+		let numbers = identifyNumbers(displayText)
 		display(operate(numbers[0], numbers[1], operand))
 	}
 }
@@ -211,7 +212,7 @@ function operandPress(buttPressed) {
 		numberPress(buttPressed)
 		console.log('normal valid press')
 	} else if (secondOperator) {
-		let numbers = identifyNumbers(displayText, currOperand);
+		let numbers = identifyNumbers(displayText);
 		let result = operate(numbers[0], numbers[1], identifyOperand(displayText, operandsList));
 		display(result + currOperand)
 		console.log('second operator')
@@ -221,16 +222,23 @@ function operandPress(buttPressed) {
 }
 
 function decimal() {
+	console.log("boop")
 	let displayText = document.getElementById("display").innerText;
 	let lastChar = displayText.charAt(displayText.length-1)
-	let currNumber = identifyNumbers()
-	currNumber = currNumber[currNumber.length - 1]
+	let numbers = identifyNumbers(displayText)
+	currNumber = numbers[numbers.length - 1]
 
-	console.log(currNumber)
+	console.log(numbers)
 
-	if (!isNaN(lastChar) && !currNumber.includes('.')) {
+	let lastCharIsNum = !Number.isNaN(parseFloat(lastChar))
+	let decimalInNum = currNumber.includes('.')
+
+	if (decimalInNum) {return}
+
+	if (lastCharIsNum) {
 		display(displayText += '.')
-		// disable decimal button
+	} else if (!lastCharIsNum) {
+		display(displayText += '0.')
 	}
 }
 
