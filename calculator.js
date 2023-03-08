@@ -1,5 +1,8 @@
-const operandsList = ["+", "-", "*", "/"]
-const divideByZeroMsg = "no!"
+const operandsList = ["+", "-", "*", "/"];
+const divideByZeroMsg = "no!";
+const disableClass = "disabled";
+const allButtons = document.querySelectorAll('button');
+allButtons = Array.from(allButtons);
 
 function add(num1, num2) {
   return num1 + num2;
@@ -40,18 +43,6 @@ function display(toDisplay) {
 function clear() {
   document.getElementById("display").innerText = "";
 	//enable decimal button
-}
-
-function numberPress(buttPressed) {
-  let textToDisplay = document.getElementById("display").innerText;
-
-	if (textToDisplay.includes(divideByZeroMsg)) {
-		clear();
-		textToDisplay = document.getElementById("display").innerText;
-	}
-	
-  textToDisplay += buttPressed.innerText;
-  display(textToDisplay);
 }
 
 function identifyNumbers(calcString) {
@@ -158,6 +149,70 @@ function identifyEquation(calcString) {
 	}
 }
 
+function buttToggler(buttonTogg, classTogg) {
+	buttonTogg.classList.toggle(classTogg)
+}
+
+function buttReset() {
+	for (butt of allButtons) {
+		if (butt.classList.contains(disableClass)) {
+			buttToggler(butt, disableClass)
+		}
+	}
+}
+
+function buttDisabler() {
+	buttReset()
+
+	let displayText = document.getElementById("display").innerText;
+	let numbers = identifyNumbers(displayText);
+	let lastChar = displayText.charAt(displayText.length - 1);
+
+	let emptyDisplay = displayText == "";
+	let onlyMinus = displayText == "-";
+	let oneNum = numbers.length == 1;
+	let twoNums = numbers.length >= 2;
+	let hangingOper = operandsList.some(operand => operand == lastChar)
+
+	if (emptyDisplay) {
+		// only minus allowed
+		for (butt of operandButsArray) {
+			if (butt.innerText != "-") {
+				buttToggler(butt, disableClass)
+			}
+		}
+
+	} else if (onlyMinus) {
+		// none allowed
+		for (butt of operandButsArray) {
+			buttToggler(butt, disableClass)
+		}
+
+	} else if (hangingOper) {
+		// all but present operand allowed
+		let operand = lastChar
+
+		for (butt of operandButsArray) {
+			if (butt.innerText == operand) {
+				buttToggler(butt, disableClass)
+			}
+		}
+
+	}
+}
+
+function numberPress(buttPressed) {
+  let textToDisplay = document.getElementById("display").innerText;
+
+	if (textToDisplay.includes(divideByZeroMsg)) {
+		clear();
+		textToDisplay = document.getElementById("display").innerText;
+	}
+	
+  textToDisplay += buttPressed.innerText;
+  display(textToDisplay);
+}
+
 function equals() {
 	let displayText = document.getElementById("display").innerText
 	let equationExists = identifyEquation(displayText)
@@ -171,6 +226,9 @@ function equals() {
 	}
 }
 
+const operandButs = document.querySelectorAll(".operand");
+const operandButsArray = Array.from(operandButs);
+
 function operandPress(buttPressed) {
 
   let displayText = document.getElementById("display").innerText;
@@ -180,45 +238,48 @@ function operandPress(buttPressed) {
 		return
 	}
 
-	let currOperand = buttPressed.innerText;
-	let minus = currOperand == "-";
-	
-	let prevChar = displayText.charAt(displayText.length - 1);
-	let prevCharIsOp = operandsList.some(operand => operand == currOperand);
-	let prevCharIsNum = !Number.isNaN(parseFloat(prevChar));
-	let isFirstChar = displayText.length = 0;
-	let afterOperand = identifyOperand(displayText, operandsList);
-	let afterEquation = identifyEquation(displayText, operandsList);
-	function tripleOperandCheck() {
-		if (displayText.length > 2) {
-			let lastTwoChars = displayText.slice(-2).split('')
-			const isOperand = (character) => operandsList.some(operand => character == operand)
-			return lastTwoChars.every(isOperand)
+	let numbers = identifyNumbers(displayText)
+	let lastChar = displayText.charAt(displayText.length - 1)
+
+	let emptyDisplay = displayText == ""
+	let onlyMinus = displayText == "-"
+	let oneNum = numbers.length == 1
+	let twoNums = numbers.length >= 2
+	let hangingOper = operandsList.some(operand => operand == lastChar)
+
+	if (emptyDisplay) {
+		// only minus allowed
+		for (butt of operandButsArray) {
+			if (butt.innerText != "-") {
+				buttToggler(butt)
+			}
 		}
-	}
-	let tripleOperand = tripleOperandCheck()
+	} else if (onlyMinus) {
+		// none allowed
+	} else if (oneNum) {
+		// all allowed
+		// if last char is ".", add 0 then oper
+	} else if (hangingOper) {
+		// all but present operand allowed
+		// change present operand
+	} else if (twoNums) {
+		// all allowed
+		// check decimal, add 0
+		// operate
+		// add symbol
+		// display
 
-	let minusFirstChar = isFirstChar && minus;
-	let isOperator = prevCharIsNum && !afterEquation;
-	let minusAfterOp = minus && prevCharIsOp && !tripleOperand && !afterEquation;
-	let secondOperator = prevCharIsNum && afterEquation;
-
-	let normalValidPress = minusFirstChar || isOperator || minusAfterOp;
-
-	if (displayText == divideByZeroMsg) {
-		clear()
-		console.log('clear message')
-	} else if (normalValidPress) {
-		numberPress(buttPressed)
-		console.log('normal valid press')
-	} else if (secondOperator) {
-		let numbers = identifyNumbers(displayText);
-		let result = operate(numbers[0], numbers[1], identifyOperand(displayText, operandsList));
-		display(result + currOperand)
-		console.log('second operator')
-	} else if (tripleOperand) {
-		console.log('triple operand')
-	}
+	// } else if (normalValidPress) {
+	// 	numberPress(buttPressed)
+	// 	console.log('normal valid press')
+	// } else if (secondOperator) {
+	// 	let numbers = identifyNumbers(displayText);
+	// 	let result = operate(numbers[0], numbers[1], identifyOperand(displayText, operandsList));
+	// 	display(result + currOperand)
+	// 	console.log('second operator')
+	// } else if (tripleOperand) {
+	// 	console.log('triple operand')
+	// }
 }
 
 function decimal() {
