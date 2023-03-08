@@ -49,6 +49,19 @@ function clear() {
 	buttDisabler()
 }
 
+function backspace() {
+	let textToDisplay = document.getElementById("display").innerText;
+
+	if (textToDisplay.includes(divideByZeroMsg)) {
+		clear();
+		textToDisplay = document.getElementById("display").innerText;
+	}
+	
+  textToDisplay = textToDisplay.slice(0, -1);
+  display(textToDisplay);
+	buttDisabler()
+}
+
 function identifyNumbers(calcString) {
 	// let numbers;
 
@@ -180,7 +193,7 @@ function buttDisabler() {
 	let twoNums = numbers.length >= 2;
 	let hangingOper = operandsList.some(operand => operand == lastChar)
 	let operThenMinus = operandsList.some(operand => operand == charBeforeLast) && lastChar == "-"
-	
+
 	// decimal
 	if (displayText.includes(".")) {
 
