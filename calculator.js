@@ -1,8 +1,12 @@
 const operandsList = ["+", "-", "*", "/"];
 const divideByZeroMsg = "no!";
 const disableClass = "disabled";
-const allButtons = document.querySelectorAll('button');
+
+let allButtons = document.querySelectorAll('button');
 allButtons = Array.from(allButtons);
+
+const operandButs = document.querySelectorAll(".operand");
+const operandButsArray = Array.from(operandButs);
 
 function add(num1, num2) {
   return num1 + num2;
@@ -42,7 +46,7 @@ function display(toDisplay) {
 
 function clear() {
   document.getElementById("display").innerText = "";
-	//enable decimal button
+	buttDisabler()
 }
 
 function identifyNumbers(calcString) {
@@ -149,8 +153,9 @@ function identifyEquation(calcString) {
 	}
 }
 
-function buttToggler(buttonTogg, classTogg) {
+function buttToggler(buttonTogg, classTogg = disableClass) {
 	buttonTogg.classList.toggle(classTogg)
+	buttonTogg.toggleAttribute(classTogg)
 }
 
 function buttReset() {
@@ -167,12 +172,33 @@ function buttDisabler() {
 	let displayText = document.getElementById("display").innerText;
 	let numbers = identifyNumbers(displayText);
 	let lastChar = displayText.charAt(displayText.length - 1);
+	let charBeforeLast = displayText.charAt(displayText.length - 2)
 
 	let emptyDisplay = displayText == "";
 	let onlyMinus = displayText == "-";
 	let oneNum = numbers.length == 1;
 	let twoNums = numbers.length >= 2;
 	let hangingOper = operandsList.some(operand => operand == lastChar)
+	let operThenMinus = operandsList.some(operand => operand == charBeforeLast) && lastChar == "-"
+	
+	// decimal
+	if (displayText.includes(".")) {
+
+		let decimalButt = document.getElementById("decimalButton")
+
+		if (numbers[0].includes(".") && !hangingOper) {
+			buttToggler(decimalButt)
+		} else if (numbers[1].includes(".")) {
+			buttToggler(decimalButt)
+		}
+	}
+
+	// equal
+	if (!identifyEquation(displayText)) {
+		buttToggler(document.getElementById("equalsButton"))
+	}
+
+	// operands
 
 	if (emptyDisplay) {
 		// only minus allowed
@@ -182,7 +208,7 @@ function buttDisabler() {
 			}
 		}
 
-	} else if (onlyMinus) {
+	} else if (onlyMinus || operThenMinus) {
 		// none allowed
 		for (butt of operandButsArray) {
 			buttToggler(butt, disableClass)
@@ -190,10 +216,11 @@ function buttDisabler() {
 
 	} else if (hangingOper) {
 		// all but present operand allowed
+		// minus excepted
 		let operand = lastChar
 
 		for (butt of operandButsArray) {
-			if (butt.innerText == operand) {
+			if (butt.innerText == operand && butt.innerText != "-") {
 				buttToggler(butt, disableClass)
 			}
 		}
@@ -211,6 +238,7 @@ function numberPress(buttPressed) {
 	
   textToDisplay += buttPressed.innerText;
   display(textToDisplay);
+	buttDisabler()
 }
 
 function equals() {
@@ -224,12 +252,12 @@ function equals() {
 		let numbers = identifyNumbers(displayText)
 		display(operate(numbers[0], numbers[1], operand))
 	}
+
+	buttDisabler()
 }
 
-const operandButs = document.querySelectorAll(".operand");
-const operandButsArray = Array.from(operandButs);
-
 function operandPress(buttPressed) {
+	console.log("boop")
 
   let displayText = document.getElementById("display").innerText;
 	
@@ -238,48 +266,39 @@ function operandPress(buttPressed) {
 		return
 	}
 
+	let operandPressed = buttPressed.innerText
 	let numbers = identifyNumbers(displayText)
 	let lastChar = displayText.charAt(displayText.length - 1)
+	let charBeforeLast = displayText.charAt(displayText.length - 2)
 
-	let emptyDisplay = displayText == ""
-	let onlyMinus = displayText == "-"
-	let oneNum = numbers.length == 1
 	let twoNums = numbers.length >= 2
 	let hangingOper = operandsList.some(operand => operand == lastChar)
+	let hangingDecimal = lastChar == "."
+	let operThenMinus = operandsList.some(operand => operand == charBeforeLast) && lastChar == "-"
 
-	if (emptyDisplay) {
-		// only minus allowed
-		for (butt of operandButsArray) {
-			if (butt.innerText != "-") {
-				buttToggler(butt)
-			}
-		}
-	} else if (onlyMinus) {
-		// none allowed
-	} else if (oneNum) {
-		// all allowed
-		// if last char is ".", add 0 then oper
-	} else if (hangingOper) {
-		// all but present operand allowed
-		// change present operand
-	} else if (twoNums) {
-		// all allowed
-		// check decimal, add 0
-		// operate
-		// add symbol
-		// display
+	if (hangingDecimal) {
+		display(displayText + "0")
+	}
 
-	// } else if (normalValidPress) {
-	// 	numberPress(buttPressed)
-	// 	console.log('normal valid press')
-	// } else if (secondOperator) {
-	// 	let numbers = identifyNumbers(displayText);
-	// 	let result = operate(numbers[0], numbers[1], identifyOperand(displayText, operandsList));
-	// 	display(result + currOperand)
-	// 	console.log('second operator')
-	// } else if (tripleOperand) {
-	// 	console.log('triple operand')
-	// }
+	if (hangingOper && operandPressed == "-") {
+		numberPress(buttPressed)
+		buttDisabler()
+		return
+	}
+
+	if (hangingOper) {
+		display(displayText.replace(lastChar, operandPressed))
+		buttDisabler()
+		return
+	}
+
+	if (twoNums) {
+		let operandForTwoNums = identifyOperand(displayText)
+		display(operate(numbers[0], numbers[1], operandForTwoNums))
+	}
+
+	numberPress(buttPressed)
+	buttDisabler()
 }
 
 function decimal() {
@@ -301,6 +320,8 @@ function decimal() {
 	} else if (!lastCharIsNum) {
 		display(displayText += '0.')
 	}
+
+	buttDisabler()
 }
 
 // Add and remove classes
@@ -326,8 +347,6 @@ numberButsArray.forEach((numberBut) => {
 const clearBut = document.getElementById("clearButton");
 clearBut.addEventListener("click", clear);
 
-const operandButs = document.querySelectorAll(".operand");
-const operandButsArray = Array.from(operandButs);
 operandButsArray.forEach((operandBut) => {
   operandBut.addEventListener("click", operandPress.bind(null, operandBut));
 });
@@ -337,4 +356,7 @@ equalsButton.addEventListener("click", equals)
 
 const decimalButton = document.getElementById("decimalButton")
 decimalButton.addEventListener("click", decimal)
+
+// Startup
+buttDisabler()
 
