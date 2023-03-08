@@ -370,6 +370,9 @@ equalsButton.addEventListener("click", equals)
 const decimalButton = document.getElementById("decimalButton")
 decimalButton.addEventListener("click", decimal)
 
+const backspaceButton = document.getElementById("backspaceButton")
+backspaceButton.addEventListener("click", backspace)
+
 // Startup
 buttDisabler()
 
