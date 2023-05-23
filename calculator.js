@@ -2,8 +2,8 @@ const operandsList = ["+", "-", "*", "/"];
 const divideByZeroMsg = "no!";
 const disableClass = "disabled";
 
-let allButtons = document.querySelectorAll('button');
-allButtons = Array.from(allButtons);
+const allButtons = document.querySelectorAll('button');
+const allButtonsArray = Array.from(allButtons);
 
 const operandButs = document.querySelectorAll(".operand");
 const operandButsArray = Array.from(operandButs);
@@ -50,12 +50,12 @@ function clear() {
 }
 
 function backspace() {
-	let textToDisplay = document.getElementById("display").innerText;
+  let textToDisplay = document.getElementById("display").innerText;
 
-	if (textToDisplay.includes(divideByZeroMsg)) {
+  if (textToDisplay.includes(divideByZeroMsg)) {
 		clear();
 		textToDisplay = document.getElementById("display").innerText;
-	}
+  }
 	
   textToDisplay = textToDisplay.slice(0, -1);
   display(textToDisplay);
@@ -63,10 +63,6 @@ function backspace() {
 }
 
 function identifyNumbers(calcString) {
-	// let numbers;
-
-	let operandInText = identifyOperand(calcString)
-
 	let numList = [];
 	let currNum = "";
 
@@ -76,7 +72,7 @@ function identifyNumbers(calcString) {
 		let nextChar = calcString[+charIndex + 1];
 		let lastChar = calcString[+charIndex - 1];
 
-		// evaluate characters as num
+		// evaluate characters as num/NaN
 		let charIsNum = !Number.isNaN(parseFloat(char)) || char == ".";
 		let nextCharIsNum = !Number.isNaN(parseFloat(nextChar)) || nextChar == ".";
 		let lastCharIsNum = !Number.isNaN(parseFloat(lastChar)) || lastChar == ".";
@@ -90,8 +86,9 @@ function identifyNumbers(calcString) {
 		let currNanNextNan = !charIsNum && !nextCharIsNum;
 
 		let charIsOperand = nanBetweenNums || currNanNextNan;	
-		// conditionals
 
+		// conditionals
+		
 		if (charIsOperand) {
 			numList.push(currNum)
 			currNum = "";
@@ -109,7 +106,7 @@ function identifyNumbers(calcString) {
 function identifyOperand(calcString) {
 	let includesAnOperand = operandsList.some(operand => calcString.includes(operand))
 
-	// Negative num identifying minuses may be removed from this var 
+	// Negative num identifying minuses may be removed from this 
 	// 	during minus handling process.
 	let calcStringIter = calcString
 
@@ -172,7 +169,7 @@ function buttToggler(buttonTogg, classTogg = disableClass) {
 }
 
 function buttReset() {
-	for (butt of allButtons) {
+	for (butt of allButtonsArray) {
 		if (butt.classList.contains(disableClass)) {
 			buttToggler(butt, disableClass)
 		}
